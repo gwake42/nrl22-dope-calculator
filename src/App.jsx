@@ -13,6 +13,12 @@ function App() {
     const [stages, setStages] = useState([]);
     const [userSettings, setUserSettings] = useState(Storage.getDefaultSettings());
     const [weather, setWeather] = useState(null);
+    const [manualWeather, setManualWeather] = useState({
+        temp: 59,
+        pressure: 29.92,
+        altitude: 0
+    });
+    const [useManualWeather, setUseManualWeather] = useState(false);
 
     // Load data from localStorage on mount
     useEffect(() => {
@@ -39,16 +45,24 @@ function App() {
         setWeather(weatherData);
     };
 
+    // Get current weather (manual or auto)
+    const getCurrentWeather = () => {
+        if (useManualWeather) {
+            return manualWeather;
+        }
+        return weather || { temp: 59, pressure: 29.92, altitude: 0 };
+    };
+
     return (
         <div className="min-h-screen bg-gray-100 pb-20">
             {/* Header */}
             <header className="bg-blue-600 text-white p-4 shadow-lg">
                 <h1 className="text-2xl font-bold">NRL22 Dope Calculator</h1>
-                {weather && (
-                    <div className="text-sm mt-1 opacity-90">
-                        {weather.temp}°F • {weather.pressure}" Hg • {weather.altitude}' elevation
-                    </div>
-                )}
+                <div className="text-sm mt-1 opacity-90">
+                    {getCurrentWeather().temp}°F • {getCurrentWeather().pressure}" Hg • {getCurrentWeather().altitude}' elevation
+                    {useManualWeather && <span className="ml-2 text-yellow-200">(Manual)</span>}
+                    {weather && !useManualWeather && <span className="ml-2 text-green-200">(GPS)</span>}
+                </div>
             </header>
 
             {/* Main Content */}
@@ -57,7 +71,12 @@ function App() {
                     <HomeView 
                         setView={setView} 
                         getLocationAndWeather={getLocationAndWeather} 
-                        weather={weather} 
+                        weather={getCurrentWeather()}
+                        manualWeather={manualWeather}
+                        setManualWeather={setManualWeather}
+                        useManualWeather={useManualWeather}
+                        setUseManualWeather={setUseManualWeather}
+                        getCurrentWeather={getCurrentWeather}
                     />
                 )}
                 {view === 'newStage' && (
@@ -66,7 +85,7 @@ function App() {
                         stages={stages} 
                         setStages={setStages} 
                         userSettings={userSettings} 
-                        weather={weather} 
+                        weather={getCurrentWeather()} 
                     />
                 )}
                 {view === 'stages' && (
@@ -75,14 +94,14 @@ function App() {
                         stages={stages} 
                         setStages={setStages} 
                         userSettings={userSettings} 
-                        weather={weather} 
+                        weather={getCurrentWeather()} 
                     />
                 )}
                 {view === 'quickLookup' && (
                     <QuickLookupView 
                         setView={setView} 
                         userSettings={userSettings} 
-                        weather={weather} 
+                        weather={getCurrentWeather()} 
                     />
                 )}
                 {view === 'settings' && (
