@@ -73,21 +73,25 @@ function generateMultiCardHTML(stages, userSettings) {
             
             .cards-container {
                 display: grid;
-                grid-template-columns: repeat(4, 1fr);
-                grid-template-rows: repeat(5, 1fr);
+                grid-template-columns: repeat(4, 2in);
+                grid-template-rows: repeat(5, 3.5in);
                 gap: 0.1in;
-                width: 100%;
-                height: 100vh;
+                width: 8.5in;
+                height: 10.5in;
                 padding: 0;
+                margin: 0 auto;
             }
             
             .dope-card {
+                width: 2in;
+                height: 3.5in;
                 border: 1px solid #000;
                 display: flex;
                 flex-direction: column;
                 background: white;
                 overflow: hidden;
                 page-break-inside: avoid;
+                box-sizing: border-box;
             }
             
             .header {
